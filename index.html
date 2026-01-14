@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>School Navigator</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', cursive, sans-serif;
+      background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
+      height: 100%;
+      overflow: auto;
+    }
+
+    .game-container {
+      background: white;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 1400px;
+      width: 95%;
+      margin: 15px auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #f59e0b;
+      margin: 0 0 8px 0;
+      font-size: 24px;
+    }
+
+    .target-room {
+      text-align: center;
+      color: #ec4899;
+      font-size: 15px;
+      margin-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .character-selector {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .character-option {
+      background: #fef3c7;
+      border: 3px solid #fde68a;
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .character-option:hover {
+      transform: scale(1.1);
+      border-color: #f59e0b;
+    }
+
+    .character-option.selected {
+      background: #fbbf24;
+      border-color: #f59e0b;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+
+    .game-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .grid-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(11, 1fr);
+      grid-template-rows: repeat(12, 1fr);
+      gap: 0;
+      background: #fef3c7;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .cell {
+      aspect-ratio: 1;
+      background: white;
+      border: 2px solid #fde68a;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-weight: bold;
+      color: #92400e;
+      text-align: center;
+      padding: 3px;
+      position: relative;
+      transition: all 0.3s ease;
+    }
+
+    .cell.hallway {
+      background: #dbeafe;
+      border: 1px solid #bfdbfe;
+      border-radius: 0;
+    }
+
+    .cell.room {
+      background: white;
+      border: 2px solid #fde68a;
+      border-radius: 8px;
+    }
+
+    .cell.target {
+      background: #fce7f3;
+      border-color: #ec4899;
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.4);
+    }
+
+    .cell.visited {
+      background: #e0f2fe;
+    }
+
+    .character {
+      font-size: 28px;
+      position: absolute;
+      transition: all 0.3s ease;
+      filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .control-panel {
+      flex: 1;
+      min-width: 280px;
+      max-width: 400px;
+    }
+
+    .commands-section {
+      background: #fef3c7;
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+    }
+
+    .commands-section h3 {
+      margin: 0 0 10px 0;
+      color: #92400e;
+      font-size: 15px;
+    }
+
+    .command-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .command-btn {
+      background: #f59e0b;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .command-btn:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    }
+
+    .command-btn:active {
+      transform: translateY(0);
+    }
+
+    .command-btn.stop {
+      background: #ec4899;
+      grid-column: span 2;
+    }
+
+    .command-btn.stop:hover {
+      background: #db2777;
+    }
+
+    .command-list {
+      background: white;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 80px;
+      max-height: 150px;
+      overflow-y: auto;
+      border: 2px solid #fde68a;
+    }
+
+    .command-item {
+      background: #fef3c7;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: #92400e;
+    }
+
+    .remove-btn {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .remove-btn:hover {
+      background: #dc2626;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+    }
+
+    .run-btn {
+      background: #10b981;
+      color: white;
+    }
+
+    .run-btn:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+
+    .reset-btn {
+      background: #6b7280;
+      color: white;
+    }
+
+    .reset-btn:hover {
+      background: #4b5563;
+    }
+
+    .message {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 16px;
+      display: none;
+    }
+
+    .message.success {
+      background: #d1fae5;
+      color: #065f46;
+      border: 2px solid #10b981;
+      display: block;
+    }
+
+    .message.error {
+      background: #fee2e2;
+      color: #991b1b;
+      border: 2px solid #ef4444;
+      display: block;
+    }
+
+    .legend {
+      background: #fef3c7;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-size: 13px;
+    }
+
+    .legend h4 {
+      margin: 0 0 10px 0;
+      color: #92400e;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      color: #92400e;
+    }
+
+    .legend-icon {
+      margin-right: 10px;
+      font-size: 20px;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="game-container">
+   <h1 id="game-title">🏫 Niiyama Elementary School Navigator - Map</h1>
+   <div class="character-selector">
+    <div class="character-option selected" data-char="🙂" onclick="selectCharacter('🙂')">
+     🙂
+    </div>
+    <div class="character-option" data-char="🐱" onclick="selectCharacter('🐱')">
+     🐱
+    </div>
+    <div class="character-option" data-char="🐶" onclick="selectCharacter('🐶')">
+     🐶
+    </div>
+    <div class="character-option" data-char="🤖" onclick="selectCharacter('🤖')">
+     🤖
+    </div>
+    <div class="character-option" data-char="👽" onclick="selectCharacter('👽')">
+     👽
+    </div>
+    <div class="character-option" data-char="👻" onclick="selectCharacter('👻')">
+     👻
+    </div>
+    <div class="character-option" data-char="🧙" onclick="selectCharacter('🧙')">
+     🧙
+    </div>
+    <div class="character-option" data-char="🦸" onclick="selectCharacter('🦸')">
+     🦸
+    </div>
+   </div>
+   <div class="target-room" id="target-display">
+    Navigate to: <span id="target-name"></span>
+   </div>
+   <div class="game-layout">
+    <div class="grid-container">
+     <div class="grid" id="grid"></div>
+     <div class="legend">
+      <h4>Legend:</h4>
+      <div class="legend-item">
+       <span class="legend-icon" id="legend-char">🙂</span> Your character
+      </div>
+      <div class="legend-item">
+       <span class="legend-icon">⭐</span> Target room
+      </div>
+      <div class="legend-item">
+       <span class="legend-icon">🚪</span> Entrance
+      </div>
+     </div>
+    </div>
+    <div class="control-panel">
+     <div class="commands-section">
+      <h3>📝 Add Commands</h3>
+      <div class="command-buttons"><button class="command-btn" onclick="addCommand('forward')">⬆️ Go Straight</button> <button class="command-btn" onclick="addCommand('left')">⬅️ Turn Left</button> <button class="command-btn" onclick="addCommand('right')">➡️ Turn Right</button> <button class="command-btn stop" onclick="addCommand('stop')">🛑 Stop</button>
+      </div>
+      <h3>📋 Your Program</h3>
+      <div class="command-list" id="command-list">
+       <div style="color: #9ca3af; text-align: center;">
+        No commands yet. Add some above!
+       </div>
+      </div>
+      <div class="action-buttons"><button class="action-btn run-btn" onclick="runProgram()">▶️ Run</button> <button class="action-btn reset-btn" onclick="resetGame()">🔄 Reset</button>
+      </div>
+     </div>
+     <div class="message" id="message"></div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      game_title: "🏫 Niiyama Elementary School Navigator - Map",
+      success_message: "🎉 Excellent! You reached the correct room!"
+    };
+
+    let config = {};
+
+    const locations = [
+      { name: "Principal's Office", emoji: "👔" },
+      { name: "Teacher's Office", emoji: "👩‍🏫" },
+      { name: "Computer Room", emoji: "💻" },
+      { name: "Science Room", emoji: "🔬" },
+      { name: "Music Room", emoji: "🎵" },
+      { name: "Lunch Room", emoji: "🍽️" },
+      { name: "Nurse's Office", emoji: "🩺" },
+      { name: "Cooking Room", emoji: "👨‍🍳" },
+      { name: "Library", emoji: "📚" },
+      { name: "Gym", emoji: "🏀" },
+      { name: "Arts & Crafts", emoji: "🎨" },
+      { name: "Restroom", emoji: "🚻" },
+      { name: "Swimming Pool", emoji: "🏊" },
+      { name: "Playground", emoji: "🤸‍‍" },
+      { name: "Grade 1", emoji: "1️⃣" },
+           { name: "Grade 2", emoji: "2️⃣" },
+           { name: "Grade 3", emoji: "3️⃣" },
+           { name: "Grade 4", emoji: "4️⃣" },
+           { name: "Grade 5", emoji: "5️⃣" },
+           { name: "Grade 6", emoji: "6️⃣" },
+       { name: "Entrance", emoji: "🚪" }
+    ];
+
+    let gridData = [];
+    let commands = [];
+    let playerPos = { row: 11, col: 5 };
+    let playerDirection = 0; // 0: North, 1: East, 2: South, 3: West
+    let selectedCharacter = '🙂';
+    let targetRoom = null;
+    let isRunning = false;
+    let visitedCells = new Set();
+
+    function selectCharacter(char) {
+      if (isRunning) return;
+      selectedCharacter = char;
+      document.querySelectorAll('.character-option').forEach(opt => {
+        if (opt.dataset.char === char) {
+          opt.classList.add('selected');
+        } else {
+          opt.classList.remove('selected');
+        }
+      });
+      document.getElementById('legend-char').textContent = char;
+      renderGrid();
+    }
+
+    function initGrid() {
+      gridData = [];
+      
+      const shuffledLocations = [...locations].sort(() => Math.random() - 0.5);
+      let locationIndex = 0;
+      
+      for (let row = 0; row < 12; row++) {
+        for (let col = 0; col < 11; col++) {
+          if (row === 11) {
+            gridData.push({ type: 'hallway', data: null });
+          } else if (row % 2 === 0 && col % 2 === 0) {
+            gridData.push({ 
+              type: 'room', 
+              data: shuffledLocations[locationIndex % shuffledLocations.length],
+              index: locationIndex
+            });
+            locationIndex++;
+          } else {
+            gridData.push({ type: 'hallway', data: null });
+          }
+        }
+      }
+      
+      gridData[126] = { 
+        type: 'room', 
+        data: locations[20],
+        index: -1
+      };
+      
+      do {
+        const randomRow = Math.floor(Math.random() * 6) * 2;
+        const randomCol = Math.floor(Math.random() * 6) * 2;
+        targetRoom = randomRow * 11 + randomCol;
+      } while (targetRoom === 126);
+      
+      renderGrid();
+      updateTargetDisplay();
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('grid');
+      grid.innerHTML = '';
+      
+      for (let i = 0; i < 132; i++) {
+        const cell = document.createElement('div');
+        const cellData = gridData[i];
+        
+        if (cellData.type === 'hallway') {
+          cell.className = 'cell hallway';
+        } else {
+          cell.className = 'cell room';
+          if (i === targetRoom) cell.classList.add('target');
+          
+          const emoji = document.createElement('div');
+          emoji.textContent = cellData.data.emoji;
+          emoji.style.fontSize = '18px';
+          
+          const label = document.createElement('div');
+          label.textContent = cellData.data.name;
+          
+          cell.appendChild(emoji);
+          cell.appendChild(label);
+        }
+        
+        if (visitedCells.has(i)) cell.classList.add('visited');
+        
+        if (i === playerPos.row * 11 + playerPos.col) {
+          const characterContainer = document.createElement('div');
+          characterContainer.style.display = 'flex';
+          characterContainer.style.alignItems = 'center';
+          characterContainer.style.justifyContent = 'center';
+          characterContainer.style.position = 'absolute';
+          characterContainer.style.gap = '2px';
+          
+          const character = document.createElement('div');
+          character.textContent = selectedCharacter;
+          character.style.fontSize = '28px';
+          character.style.filter = 'drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2))';
+          
+          const arrow = document.createElement('div');
+          arrow.style.fontSize = '20px';
+          arrow.style.filter = 'drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2))';
+          
+          const arrows = ['⬆️', '➡️', '⬇️', '⬅️'];
+          arrow.textContent = arrows[playerDirection];
+          
+          characterContainer.appendChild(character);
+          characterContainer.appendChild(arrow);
+          cell.appendChild(characterContainer);
+        }
+        
+        grid.appendChild(cell);
+      }
+    }
+
+    function updateTargetDisplay() {
+      const targetData = gridData[targetRoom];
+      document.getElementById('target-name').textContent = targetData.data.emoji + ' ' + targetData.data.name;
+    }
+
+    function addCommand(cmd) {
+      if (isRunning) return;
+      commands.push(cmd);
+      updateCommandList();
+    }
+
+    function updateCommandList() {
+      const list = document.getElementById('command-list');
+      
+      if (commands.length === 0) {
+        list.innerHTML = '<div style="color: #9ca3af; text-align: center;">No commands yet. Add some above!</div>';
+        return;
+      }
+      
+      list.innerHTML = '';
+      commands.forEach((cmd, index) => {
+        const item = document.createElement('div');
+        item.className = 'command-item';
+        
+        const cmdNames = {
+          'forward': '⬆️ Go Straight',
+          'left': '⬅️ Turn Left',
+          'right': '➡️ Turn Right',
+          'stop': '🛑 Stop'
+        };
+        
+        const label = document.createElement('span');
+        label.textContent = `${index + 1}. ${cmdNames[cmd]}`;
+        
+        const removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.textContent = '✕';
+        removeBtn.onclick = () => removeCommand(index);
+        
+        item.appendChild(label);
+        item.appendChild(removeBtn);
+        list.appendChild(item);
+      });
+    }
+
+    function removeCommand(index) {
+      if (isRunning) return;
+      commands.splice(index, 1);
+      updateCommandList();
+    }
+
+    async function runProgram() {
+      if (isRunning || commands.length === 0) return;
+      
+      isRunning = true;
+      hideMessage();
+      visitedCells.clear();
+      
+      for (let i = 0; i < commands.length; i++) {
+        const cmd = commands[i];
+        
+        if (cmd === 'forward') {
+          await moveForward();
+        } else if (cmd === 'left') {
+          playerDirection = (playerDirection + 3) % 4;
+        } else if (cmd === 'right') {
+          playerDirection = (playerDirection + 1) % 4;
+        } else if (cmd === 'stop') {
+          break;
+        }
+        
+        renderGrid();
+        await sleep(500);
+        
+        const currentPos = playerPos.row * 11 + playerPos.col;
+        if (currentPos === targetRoom) {
+          showMessage('success', config.success_message || defaultConfig.success_message);
+          isRunning = false;
+          return;
+        }
+      }
+      
+      const currentPos = playerPos.row * 11 + playerPos.col;
+      if (currentPos !== targetRoom) {
+        showMessage('error', '❌ Not quite! Try adjusting your route.');
+      }
+      
+      isRunning = false;
+    }
+
+    async function moveForward() {
+      const currentPos = playerPos.row * 11 + playerPos.col;
+      visitedCells.add(currentPos);
+      
+      let newRow = playerPos.row;
+      let newCol = playerPos.col;
+      
+      if (playerDirection === 0 && playerPos.row > 0) {
+        newRow = playerPos.row - 1;
+      } else if (playerDirection === 1 && playerPos.col < 10) {
+        newCol = playerPos.col + 1;
+      } else if (playerDirection === 2 && playerPos.row < 11) {
+        newRow = playerPos.row + 1;
+      } else if (playerDirection === 3 && playerPos.col > 0) {
+        newCol = playerPos.col - 1;
+      }
+      
+      const newPos = newRow * 11 + newCol;
+      const newCellData = gridData[newPos];
+      
+      if (newCellData.type === 'hallway') {
+        playerPos.row = newRow;
+        playerPos.col = newCol;
+      } 
+      else if (newPos === targetRoom) {
+        const targetRow = Math.floor(targetRoom / 11);
+        const targetCol = targetRoom % 11;
+        const frontDoorPos = (targetRow + 1) * 11 + targetCol;
+        
+        if (currentPos === frontDoorPos && playerDirection === 0) {
+          playerPos.row = newRow;
+          playerPos.col = newCol;
+        }
+      }
+    }
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function resetGame() {
+      if (isRunning) return;
+      
+      playerPos = { row: 11, col: 5 };
+      playerDirection = 0;
+      commands = [];
+      visitedCells.clear();
+      hideMessage();
+      updateCommandList();
+      initGrid();
+    }
+
+    function showMessage(type, text) {
+      const msg = document.getElementById('message');
+      msg.className = `message ${type}`;
+      msg.textContent = text;
+    }
+
+    function hideMessage() {
+      const msg = document.getElementById('message');
+      msg.className = 'message';
+    }
+
+    async function onConfigChange(newConfig) {
+      document.getElementById('game-title').textContent = newConfig.game_title || defaultConfig.game_title;
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig: defaultConfig,
+        onConfigChange: onConfigChange,
+        mapToCapabilities: (config) => ({
+          recolorables: [],
+          borderables: [],
+          fontEditable: undefined,
+          fontSizeable: undefined
+        }),
+        mapToEditPanelValues: (config) => new Map([
+          ["game_title", config.game_title || defaultConfig.game_title],
+          ["success_message", config.success_message || defaultConfig.success_message]
+        ])
+      });
+      config = window.elementSdk.config;
+    } else {
+      config = defaultConfig;
+    }
+
+    initGrid();
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a87a88c639e4eaa',t:'MTc2NDgxMzA4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
