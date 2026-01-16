@@ -13,48 +13,54 @@
       font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', cursive, sans-serif;
       background: linear-gradient(135deg, #f59e0b 0%, #ec4899 100%);
       height: 100%;
-      overflow: auto;
+      overflow: hidden;
+    }
+
+    html, body {
+      height: 100%;
     }
 
     .game-container {
       background: white;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      max-width: 1400px;
-      width: 95%;
-      margin: 15px auto;
+      padding: 15px;
+      height: 100%;
+      display: flex;
+      gap: 15px;
+      width: 100%;
     }
 
     h1 {
       text-align: center;
       color: #f59e0b;
-      margin: 0 0 8px 0;
-      font-size: 24px;
+      margin: 0 0 10px 0;
+      font-size: 20px;
     }
 
     .target-room {
       text-align: center;
       color: #ec4899;
-      font-size: 15px;
-      margin-bottom: 15px;
+      font-size: 14px;
+      margin-bottom: 10px;
       font-weight: bold;
+      padding: 10px;
+      background: #fce7f3;
+      border-radius: 10px;
     }
 
     .character-selector {
       display: flex;
       justify-content: center;
-      gap: 10px;
-      margin-bottom: 15px;
+      gap: 6px;
+      margin-bottom: 10px;
       flex-wrap: wrap;
     }
 
     .character-option {
       background: #fef3c7;
-      border: 3px solid #fde68a;
-      border-radius: 10px;
-      padding: 8px 12px;
-      font-size: 24px;
+      border: 2px solid #fde68a;
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 20px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -72,16 +78,18 @@
 
     .game-layout {
       display: flex;
-      flex-direction: column;
-      gap: 20px;
-      align-items: center;
+      gap: 15px;
+      height: 100%;
+      width: 100%;
     }
 
     .grid-container {
-      width: 100%;
+      flex: 1;
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
+      min-width: 0;
     }
 
     .grid {
@@ -90,25 +98,28 @@
       grid-template-rows: repeat(12, 1fr);
       gap: 0;
       background: #fef3c7;
-      padding: 10px;
-      border-radius: 12px;
+      padding: 8px;
+      border-radius: 10px;
       box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+      max-height: 100%;
+      max-width: 100%;
+      aspect-ratio: 11 / 12;
     }
 
     .cell {
       aspect-ratio: 1;
       background: white;
-      border: 2px solid #fde68a;
-      border-radius: 8px;
+      border: 1.5px solid #fde68a;
+      border-radius: 6px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 9px;
+      font-size: 7px;
       font-weight: bold;
       color: #92400e;
       text-align: center;
-      padding: 3px;
+      padding: 2px;
       position: relative;
       transition: all 0.3s ease;
     }
@@ -121,8 +132,8 @@
 
     .cell.room {
       background: white;
-      border: 2px solid #fde68a;
-      border-radius: 8px;
+      border: 1.5px solid #fde68a;
+      border-radius: 6px;
     }
 
     .cell.target {
@@ -136,49 +147,59 @@
     }
 
     .character {
-      font-size: 28px;
+      font-size: 22px;
       position: absolute;
       transition: all 0.3s ease;
       filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2));
     }
 
+    .right-panel {
+      width: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
     .control-panel {
       flex: 1;
-      min-width: 280px;
-      max-width: 400px;
+      display: flex;
+      flex-direction: column;
     }
 
     .commands-section {
       background: #fef3c7;
-      padding: 15px;
-      border-radius: 12px;
-      margin-bottom: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
     }
 
     .commands-section h3 {
-      margin: 0 0 10px 0;
+      margin: 0 0 8px 0;
       color: #92400e;
-      font-size: 15px;
+      font-size: 14px;
     }
 
     .command-buttons {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 15px;
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+      justify-content: center;
     }
 
     .command-btn {
       background: #f59e0b;
       color: white;
       border: none;
-      padding: 10px;
+      padding: 10px 14px;
       border-radius: 8px;
-      font-size: 13px;
-      font-weight: bold;
+      font-size: 24px;
       cursor: pointer;
       transition: all 0.2s ease;
       font-family: inherit;
+      flex: 1;
     }
 
     .command-btn:hover {
@@ -193,7 +214,6 @@
 
     .command-btn.stop {
       background: #ec4899;
-      grid-column: span 2;
     }
 
     .command-btn.stop:hover {
@@ -203,22 +223,23 @@
     .command-list {
       background: white;
       border-radius: 8px;
-      padding: 10px;
-      min-height: 80px;
-      max-height: 150px;
+      padding: 8px;
+      min-height: 60px;
+      max-height: 120px;
       overflow-y: auto;
       border: 2px solid #fde68a;
+      flex: 1;
     }
 
     .command-item {
       background: #fef3c7;
-      padding: 8px 12px;
-      margin-bottom: 8px;
-      border-radius: 8px;
+      padding: 6px 10px;
+      margin-bottom: 6px;
+      border-radius: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 14px;
+      font-size: 18px;
       color: #92400e;
     }
 
@@ -239,16 +260,16 @@
 
     .action-buttons {
       display: flex;
-      gap: 10px;
-      margin-top: 15px;
+      gap: 8px;
+      margin-top: 10px;
     }
 
     .action-btn {
       flex: 1;
-      padding: 14px;
+      padding: 10px;
       border: none;
-      border-radius: 10px;
-      font-size: 15px;
+      border-radius: 8px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
       transition: all 0.2s ease;
@@ -276,13 +297,15 @@
     }
 
     .message {
-      margin-top: 20px;
-      padding: 15px;
-      border-radius: 10px;
-      text-align: center;
-      font-weight: bold;
-      font-size: 16px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
 
     .message.success {
@@ -294,34 +317,76 @@
 
     .message.error {
       background: #fee2e2;
+      display: flex;
+    }
+
+    .message-text {
+      font-size: 80px;
+      font-weight: bold;
       color: #991b1b;
-      border: 2px solid #ef4444;
-      display: block;
+      text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.2);
     }
 
     .legend {
       background: #fef3c7;
-      padding: 15px;
+      padding: 12px;
       border-radius: 10px;
-      margin-top: 20px;
-      font-size: 13px;
+      font-size: 12px;
     }
 
     .legend h4 {
-      margin: 0 0 10px 0;
+      margin: 0 0 8px 0;
       color: #92400e;
+      font-size: 14px;
     }
 
     .legend-item {
       display: flex;
+      flex-direction: column;
       align-items: center;
       margin-bottom: 8px;
       color: #92400e;
     }
 
     .legend-icon {
-      margin-right: 10px;
-      font-size: 20px;
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+
+    .celebration {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #fbbf24 0%, #ec4899 50%, #8b5cf6 100%);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: celebrationPulse 1s ease-in-out infinite;
+    }
+
+    .celebration.show {
+      display: flex;
+    }
+
+    .celebration-text {
+      font-size: 120px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.3);
+      animation: celebrationBounce 0.8s ease-in-out infinite;
+    }
+
+    @keyframes celebrationPulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.95; }
+    }
+
+    @keyframes celebrationBounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
     }
   </style>
   <style>@view-transition { navigation: auto; }</style>
@@ -329,74 +394,63 @@
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
  </head>
  <body>
+  <div class="celebration" id="celebration">
+   <div class="celebration-text">
+    GOOD JOB!
+   </div>
+  </div>
   <div class="game-container">
-   <h1 id="game-title">🏫 Niiyama Elementary School Navigator - Map</h1>
-   <div class="character-selector">
-    <div class="character-option selected" data-char="🙂" onclick="selectCharacter('🙂')">
-     🙂
-    </div>
-    <div class="character-option" data-char="🐱" onclick="selectCharacter('🐱')">
-     🐱
-    </div>
-    <div class="character-option" data-char="🐶" onclick="selectCharacter('🐶')">
-     🐶
-    </div>
-    <div class="character-option" data-char="🤖" onclick="selectCharacter('🤖')">
-     🤖
-    </div>
-    <div class="character-option" data-char="👽" onclick="selectCharacter('👽')">
-     👽
-    </div>
-    <div class="character-option" data-char="👻" onclick="selectCharacter('👻')">
-     👻
-    </div>
-    <div class="character-option" data-char="🧙" onclick="selectCharacter('🧙')">
-     🧙
-    </div>
-    <div class="character-option" data-char="🦸" onclick="selectCharacter('🦸')">
-     🦸
-    </div>
-   </div>
-   <div class="target-room" id="target-display">
-    Navigate to: <span id="target-name"></span>
-   </div>
    <div class="game-layout">
     <div class="grid-container">
      <div class="grid" id="grid"></div>
-     <div class="legend">
-      <h4>Legend:</h4>
-      <div class="legend-item">
-       <span class="legend-icon" id="legend-char">🙂</span> Your character
+    </div>
+    <div class="right-panel">
+     <h1 id="game-title">🏫 School Navigator - Map</h1>
+     <div style="text-align: center; color: #92400e; font-size: 13px; font-weight: bold; margin-bottom: 8px;">
+      Your character:
+     </div>
+     <div class="character-selector">
+      <div class="character-option selected" data-char="🙂" onclick="selectCharacter('🙂')">
+       🙂
       </div>
-      <div class="legend-item">
-       <span class="legend-icon">⭐</span> Target room
+      <div class="character-option" data-char="🐱" onclick="selectCharacter('🐱')">
+       🐱
       </div>
-      <div class="legend-item">
-       <span class="legend-icon">🚪</span> Entrance
+      <div class="character-option" data-char="🐶" onclick="selectCharacter('🐶')">
+       🐶
+      </div>
+      <div class="character-option" data-char="🤖" onclick="selectCharacter('🤖')">
+       🤖
+      </div>
+      <div class="character-option" data-char="👽" onclick="selectCharacter('👽')">
+       👽
       </div>
      </div>
-    </div>
-    <div class="control-panel">
-     <div class="commands-section">
-      <h3>📝 Add Commands</h3>
-      <div class="command-buttons"><button class="command-btn" onclick="addCommand('forward')">⬆️ Go Straight</button> <button class="command-btn" onclick="addCommand('left')">⬅️ Turn Left</button> <button class="command-btn" onclick="addCommand('right')">➡️ Turn Right</button> <button class="command-btn stop" onclick="addCommand('stop')">🛑 Stop</button>
-      </div>
-      <h3>📋 Your Program</h3>
-      <div class="command-list" id="command-list">
-       <div style="color: #9ca3af; text-align: center;">
-        No commands yet. Add some above!
+     <div class="target-room" id="target-display">
+      Go to the: <span id="target-name"></span>
+     </div>
+     <div class="control-panel">
+      <div class="commands-section">
+       <h3>📝 Add Commands</h3>
+       <div class="command-buttons"><button class="command-btn" onclick="addCommand('left')">⬅️</button> <button class="command-btn" onclick="addCommand('forward')">⬆️</button> <button class="command-btn" onclick="addCommand('right')">➡️</button> <button class="command-btn stop" onclick="addCommand('stop')">🛑</button>
+       </div>
+       <h3>📋 Your Program</h3>
+       <div class="command-list" id="command-list">
+        <div style="color: #9ca3af; text-align: center; font-size: 11px;">
+         No commands yet
+        </div>
+       </div>
+       <div class="action-buttons"><button class="action-btn run-btn" onclick="runProgram()">▶️ Run</button> <button class="action-btn reset-btn" onclick="resetGame()">🔄 Reset</button>
        </div>
       </div>
-      <div class="action-buttons"><button class="action-btn run-btn" onclick="runProgram()">▶️ Run</button> <button class="action-btn reset-btn" onclick="resetGame()">🔄 Reset</button>
-      </div>
+      <div class="message" id="message"></div>
      </div>
-     <div class="message" id="message"></div>
     </div>
    </div>
   </div>
   <script>
     const defaultConfig = {
-      game_title: "🏫 Niiyama Elementary School Navigator - Map",
+      game_title: "🏫 School Navigator - Map",
       success_message: "🎉 Excellent! You reached the correct room!"
     };
 
@@ -416,14 +470,14 @@
       { name: "Arts & Crafts", emoji: "🎨" },
       { name: "Restroom", emoji: "🚻" },
       { name: "Swimming Pool", emoji: "🏊" },
-      { name: "Playground", emoji: "🤸‍‍" },
+      { name: "Playground", emoji: "🛝" },
       { name: "Grade 1", emoji: "1️⃣" },
-           { name: "Grade 2", emoji: "2️⃣" },
-           { name: "Grade 3", emoji: "3️⃣" },
-           { name: "Grade 4", emoji: "4️⃣" },
-           { name: "Grade 5", emoji: "5️⃣" },
-           { name: "Grade 6", emoji: "6️⃣" },
-       { name: "Entrance", emoji: "🚪" }
+      { name: "Grade 2", emoji: "2️⃣" },
+      { name: "Grade 3", emoji: "3️⃣" },
+      { name: "Grade 4", emoji: "4️⃣" },
+      { name: "Grade 5", emoji: "5️⃣" },
+      { name: "Grade 6", emoji: "6️⃣" },
+      { name: "Entrance", emoji: "🚪" }
     ];
 
     let gridData = [];
@@ -445,7 +499,6 @@
           opt.classList.remove('selected');
         }
       });
-      document.getElementById('legend-char').textContent = char;
       renderGrid();
     }
 
@@ -504,7 +557,7 @@
           
           const emoji = document.createElement('div');
           emoji.textContent = cellData.data.emoji;
-          emoji.style.fontSize = '18px';
+          emoji.style.fontSize = '14px';
           
           const label = document.createElement('div');
           label.textContent = cellData.data.name;
@@ -516,28 +569,17 @@
         if (visitedCells.has(i)) cell.classList.add('visited');
         
         if (i === playerPos.row * 11 + playerPos.col) {
-          const characterContainer = document.createElement('div');
-          characterContainer.style.display = 'flex';
-          characterContainer.style.alignItems = 'center';
-          characterContainer.style.justifyContent = 'center';
-          characterContainer.style.position = 'absolute';
-          characterContainer.style.gap = '2px';
-          
           const character = document.createElement('div');
           character.textContent = selectedCharacter;
-          character.style.fontSize = '28px';
+          character.style.fontSize = '22px';
           character.style.filter = 'drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.2))';
+          character.style.position = 'absolute';
+          character.style.transition = 'transform 0.3s ease';
           
-          const arrow = document.createElement('div');
-          arrow.style.fontSize = '20px';
-          arrow.style.filter = 'drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.2))';
+          const rotations = [0, 90, 180, 270];
+          character.style.transform = `rotate(${rotations[playerDirection]}deg)`;
           
-          const arrows = ['⬆️', '➡️', '⬇️', '⬅️'];
-          arrow.textContent = arrows[playerDirection];
-          
-          characterContainer.appendChild(character);
-          characterContainer.appendChild(arrow);
-          cell.appendChild(characterContainer);
+          cell.appendChild(character);
         }
         
         grid.appendChild(cell);
@@ -559,7 +601,7 @@
       const list = document.getElementById('command-list');
       
       if (commands.length === 0) {
-        list.innerHTML = '<div style="color: #9ca3af; text-align: center;">No commands yet. Add some above!</div>';
+        list.innerHTML = '<div style="color: #9ca3af; text-align: center; font-size: 11px;">No commands yet</div>';
         return;
       }
       
@@ -569,10 +611,10 @@
         item.className = 'command-item';
         
         const cmdNames = {
-          'forward': '⬆️ Go Straight',
-          'left': '⬅️ Turn Left',
-          'right': '➡️ Turn Right',
-          'stop': '🛑 Stop'
+          'forward': '⬆️',
+          'left': '⬅️',
+          'right': '➡️',
+          'stop': '🛑'
         };
         
         const label = document.createElement('span');
@@ -602,28 +644,33 @@
       hideMessage();
       visitedCells.clear();
       
-      for (let i = 0; i < commands.length; i++) {
-        const cmd = commands[i];
-        
-        if (cmd === 'forward') {
-          await moveForward();
-        } else if (cmd === 'left') {
-          playerDirection = (playerDirection + 3) % 4;
-        } else if (cmd === 'right') {
-          playerDirection = (playerDirection + 1) % 4;
-        } else if (cmd === 'stop') {
-          break;
+      try {
+        for (let i = 0; i < commands.length; i++) {
+          const cmd = commands[i];
+          
+          if (cmd === 'forward') {
+            await moveForward();
+          } else if (cmd === 'left') {
+            playerDirection = (playerDirection + 3) % 4;
+          } else if (cmd === 'right') {
+            playerDirection = (playerDirection + 1) % 4;
+          } else if (cmd === 'stop') {
+            break;
+          }
+          
+          renderGrid();
+          await sleep(500);
+          
+          const currentPos = playerPos.row * 11 + playerPos.col;
+          if (currentPos === targetRoom) {
+            showCelebration();
+            isRunning = false;
+            return;
+          }
         }
-        
+      } catch (e) {
         renderGrid();
-        await sleep(500);
-        
-        const currentPos = playerPos.row * 11 + playerPos.col;
-        if (currentPos === targetRoom) {
-          showMessage('success', config.success_message || defaultConfig.success_message);
-          isRunning = false;
-          return;
-        }
+        return;
       }
       
       const currentPos = playerPos.row * 11 + playerPos.col;
@@ -666,12 +713,28 @@
         if (currentPos === frontDoorPos && playerDirection === 0) {
           playerPos.row = newRow;
           playerPos.col = newCol;
+        } else {
+          showMessage('error', '❌ Oops! Try again.');
+          isRunning = false;
+          throw new Error('Wrong entry');
         }
+      } else if (newCellData.type === 'room') {
+        showMessage('error', '❌ Oops! Try again.');
+        isRunning = false;
+        throw new Error('Hit wall');
       }
     }
 
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    function showCelebration() {
+      const celebration = document.getElementById('celebration');
+      celebration.classList.add('show');
+      setTimeout(() => {
+        celebration.classList.remove('show');
+      }, 3000);
     }
 
     function resetGame() {
@@ -689,12 +752,19 @@
     function showMessage(type, text) {
       const msg = document.getElementById('message');
       msg.className = `message ${type}`;
-      msg.textContent = text;
+      msg.innerHTML = `<div class="message-text">${text}</div>`;
+      
+      if (type === 'error') {
+        setTimeout(() => {
+          hideMessage();
+        }, 2000);
+      }
     }
 
     function hideMessage() {
       const msg = document.getElementById('message');
       msg.className = 'message';
+      msg.innerHTML = '';
     }
 
     async function onConfigChange(newConfig) {
@@ -723,5 +793,5 @@
 
     initGrid();
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9a87a88c639e4eaa',t:'MTc2NDgxMzA4My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9be35de63313eb94',t:'MTc2ODQ1OTA3MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
